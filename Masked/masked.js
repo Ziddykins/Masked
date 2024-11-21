@@ -1,91 +1,79 @@
-var storage_data = {
-    lists: {
-        regexes: [],
-        secrets: [],
-        regex_elements: [],
-        secret_elements: []
-    },
+console.log(`masked.js loaded`);
 
-    options: {
-        dark_mode: "light",
-        enable_regexes: true,
-        enable_secrets: true,
-        secrets_in_regex: false,
-        regex_in_secrets: false,
-        mask_emails: false,
-        mask_ip_addr: false,
-        mask_style: 0
-    }
-};
+var storage_data = {};
 
 async function init() {
-    console.log(
-        '%c%c﴾%c░%c▒%c Masked%cInitialized %c▒%c░%c﴿',
-            'text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;',
-            'color:#fff; font-weight:999',
-            'color:#383838; background-color:#383838; font-weight:999;',
-            'color:#121212; background-color:#121212; font-weight:999;',
-            'text-shadow: 1px 1px 2px white, 0 0 1em aliceblue; color:#000; background-color:#0d6efd; font-weight:999;',
-            'text-shadow: 1px 1px 1px aliceblue, 0 0 1.1em white; color:#0d6efd; background-color:#000; font-weight:100;',
-            'color:#121212; background-color:#121212; font-weight:999;',
-            'color:#383838; background-color:#383838; font-weight:999;',
-            'color:#fff; font-weight:999'
-    );
-    
-    try {
-        let data = await browser.storage.local.get();
-        storage_data = data.masked_data;
-    } catch (error) {
-        console.error(error);
-    }
-    
-    do_masks();
+    return browser.storage.local.get().then((resp) => {
+        storage_data = resp.masked_data;
+        console.log("in content script, got data from storage:");
+        console.log(storage_data);
+    });
 }
 
-init();
+do_masks();
 
 async function do_masks() {
+    await init();
     let found = [];
     let secrets = storage_data.lists.secrets;
     let regexes = storage_data.lists.regexes;
-    let elements = document.querySelectorAll("*");
-    let sec_elements = document.getElementById("secret-element-list");
 
     if (storage_data.options.enable_secrets === true) {
+        let sec_elements = storage_data.lists.secrets_elements;
+        let selector = '';
+        let page_elements = null;
+    
+        sec_elements.forEach((e) => {
+            selector += `${e},`;
+        }); 
+        selector = selector.replace(/,$/, "");
+    
+        page_elements = document.querySelectorAll(selector);
+
         if (storage_data.options.regex_in_secrets) {
-            regexes.forEach((r) => {
-                let temp_rgx = `/${r}/g`;
-                secrets.push(temp_rgx);
-                status_message("Adding regex to secrets search");
-            });
+            console.log("regex in secrets enabled, combining secrets and regexes");
+            secrets = [...secrets, ...regexes];
         }
 
-        secrets.forEach(function(secret) {
-            
-            if (storage_data.options.mask_emails === false && secret.match(/email/)) {
-                return;
-            }           
-            
-            if (storage_data.options.regex_in_secrets) {
-                secrets = [...secrets, ...regexes];
-                document.querySelectorAll("*").forEach(
-                    function(hit) {
-                        found.push(hit);
-                        status_message(`Found secret ${hit}`);
-                    }
-                );
-            }
+        secrets.forEach((s) => {
+            page_elements.forEach((e) => {
+                let element_id = e.id;
+                let element_text = e.textContent;
 
-            selector = '[id*="' + secret + '"]';
+                console.log(`Searching ${element_id} for secret ${s}`);
+
+                console.log(`TExt content of element ${element_id}: ${element_text}`);
+
+                if (storage_data.options.mask_emails === false && s.match(/email/i)) {
+                    console.log(`Skipping secret '${s} due to masking email option disabled`);
+                    return;
+                }
+                
+                if (element_id && element_id.includes(s)) {
+                    console.log(`Found secrets in element ${element_id}`);
+                    found.push(element);
+                }
+            });
+                
+
+            /*           
+        
+        
+        
+                function(hit) {
+                    found.push(hit);
+                    console.log(`Found secrets ${hit}`);
+                }
+            );*/
         });
     }
 
-    if (storage_data.options.enable_regexes) {
+    if (storage_data.options.enable_regex) {
         if (storage_data.options.secrets_in_regex) {
             secrets.forEach((s) => {
                 let temp_sec = `/${s}/g`;
                 regexes.push(temp_sec);
-                status_message("Adding secrets to regex search");
+                console.log("Adding secrets to regex search");
             });
         }
         storage_data.lists.regexes.forEach((regex) => {
@@ -100,7 +88,7 @@ async function do_masks() {
                     if (input_val.match(rgx)) {
                         matched_regs++;
                         found.push(i);
-                        status_message(`Found secret ${i}`);
+                        console.log(`Found secrets ${i}`);
                     }
                 }
             });
@@ -109,7 +97,6 @@ async function do_masks() {
 
     found.forEach((f) => {
         let holder = document.createElement("a");
-        
         holder.id = f.id + '-masked';
         holder.innerHTML = '🧐';
         holder.style.top = '51%';
@@ -124,7 +111,7 @@ async function do_masks() {
                     f.type = 'password';
 
                     holder.addEventListener("click", (e) => {
-                        status_message(e);
+                        console.log(e);
                         navigator.clipboard.writeText(e.target.nextElementSibling.value);
                     });
                 }
