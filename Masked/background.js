@@ -157,28 +157,4 @@ browser.runtime.onMessage.addListener(function(message, sender, senderResponse) 
         senderResponse(true);
         return true;
     }
-
-    if (message.masked_cmd == 'suggest' && message.sender == 'popup.js') {
-        console.log(`popup.js: received suggest message: ${message.suggestion}`);
-        
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://masked.memelife.ca/suggestion", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        
-        xhr.onreadystatechange = () => {
-            console.log("xhr.onreadystatechange");
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("got XMLHttpRequest.DONE");
-                if (xhr.status === 200) {
-                    console.log("got XMLHttpRequest 200");
-                    senderResponse(xhr.responseText);
-                    return true;
-                } else {
-                    console.error(`Error sending suggestion: ${xhr.status} - ${xhr.statusText}`);
-                }
-            }
-        };
-
-        xhr.send(JSON.stringify(message.suggestion));
-    }
 });

@@ -1,5 +1,11 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
+function status_message(message) {
+    $('#status').html(message);
+    $("#status").fadeIn(2000);
+    $("#status").fadeOut(2000);
+}
+
 HTMLElement.prototype.sort_options = function() {
     Array.prototype.slice.call(this.options).sort(function(a, b) {
         return a.text > b.text ? 1 : a.text < b.text ? -1 : 0;

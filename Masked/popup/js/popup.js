@@ -4,14 +4,6 @@ console.log(Date.now() + " " + document.currentScript.src);
 var storage_data = {};
 var focused_option = null;
 
-function status_message(message) {
-    $('#status').css({display: 'block'});
-    $('#status').innerText = message;
-    $("#status").fadeIn(2000);
-    $("#status").fadeOut(2000);
-    $('#status').css({display: 'none'});
-    console.log(`Status: ${message}`);
-}
 
 function send_suggestion() {
     let suggestion = {
@@ -22,20 +14,20 @@ function send_suggestion() {
 
     suggestion.type = document.getElementById("suggestion-type-dropdown").options[suggestion.idx].innerText;
 
-    console.log("we in suggest");
-    console.log(JSON.stringify(suggestion));
+    $.ajax({
+        type: "POST",
+        url: "https://masked.memelife.ca/suggestion",
+        data: JSON.stringify(suggestion),
+        contentType: "application/json",
+        dataType: "json",
 
-    browser.runtime.sendMessage({
-        masked_cmd: 'suggest',
-        sender: 'popup.js',
-        suggestion: suggestion
-    }).then((response) => {
-        console.log("sent suggestion");
-        console.log(`got back`);
-        console.log(response);
-    }).catch((error) => {
-        console.error(error);
-        status_message("Error sending suggestion!");
+        success: function (response) {
+            status_message(response.resp);
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr, status, error);
+            status_message(`Error: [${xhr.status}] ${xhr.statusText} - ${error}`);
+        }
     });
 }
 
@@ -43,9 +35,6 @@ function init() {
     return browser.storage.local.get().then((resp) => {    
         storage_data = resp.masked_data;
 
-        console.log("popup");
-        console.log(storage_data);
-    
         console.log(
             '%c%c﴾%c░%c▒%c Masked%cInitialized %c▒%c░%c﴿',
                 'text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;',
@@ -68,7 +57,7 @@ document.getElementById('suggestion-submit').addEventListener('click', send_sugg
 document.addEventListener("DOMContentLoaded", async () => {
     await init();
     populate_popup();
-    console.log("DOM fully loaded and parsed");
+    console.log("Masked Initialized");
 
     const container = document.querySelector('#settings-content');
     const dark_mode = storage_data.options.dark_mode;
