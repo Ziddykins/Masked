@@ -2,7 +2,42 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
 var storage_data = {};
-var focused_list = null;
+var focused_option = null;
+
+function status_message(message) {
+    $('#status').css({display: 'block'});
+    $('#status').innerText = message;
+    $("#status").fadeIn(2000);
+    $("#status").fadeOut(2000);
+    $('#status').css({display: 'none'});
+    console.log(`Status: ${message}`);
+}
+
+function send_suggestion() {
+    let suggestion = {
+        idx:     document.getElementById("suggestion-type-dropdown").selectedIndex,
+        example: document.getElementById("suggestion-example").value,
+        input:   document.getElementById("suggestion-input").value
+    };
+
+    suggestion.type = document.getElementById("suggestion-type-dropdown").options[suggestion.idx].innerText;
+
+    console.log("we in suggest");
+    console.log(JSON.stringify(suggestion));
+
+    browser.runtime.sendMessage({
+        masked_cmd: 'suggest',
+        sender: 'popup.js',
+        suggestion: suggestion
+    }).then((response) => {
+        console.log("sent suggestion");
+        console.log(`got back`);
+        console.log(response);
+    }).catch((error) => {
+        console.error(error);
+        status_message("Error sending suggestion!");
+    });
+}
 
 function init() {
     return browser.storage.local.get().then((resp) => {    
@@ -28,12 +63,16 @@ function init() {
     });
 }
 
+document.getElementById('suggestion-submit').addEventListener('click', send_suggestion);
+
 document.addEventListener("DOMContentLoaded", async () => {
     await init();
     populate_popup();
+    console.log("DOM fully loaded and parsed");
 
     const container = document.querySelector('#settings-content');
-    const color_mode = storage_data.options.dark_mode;
+    const dark_mode = storage_data.options.dark_mode;
+ 
     const Default = {
         scrollbarTheme: "os-theme-dark",
         scrollbarClickScroll: true,
@@ -41,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         scrollbarVisibility: "auto"
     };
 
-    if (color_mode == 'dark') {
+    if (dark_mode) {
         document.body.setAttribute('data-bs-theme', 'dark');
         Default.scrollbarTheme = 'os-theme-light';
     } else {
@@ -67,11 +106,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    document.querySelector('#option-enable-darkmode, #masked-logo').addEventListener('click', () => {
-        storage_data.options.dark_mode = color_mode == "dark" ? "light" : "dark";
-        document.body.setAttribute('data-bs-theme', color_mode);  
-        Default.scrollbarTheme = color_mode == 'dark' ? 'os-theme-light' : 'os-theme-dark';
-        OverlayScrollbarsGlobal?.OverlayScrollbars.options.scrollbars.theme(Default.scrollbarTheme);
+    document.querySelectorAll('#option-toggle-dark-mode, #masked-logo').forEach(
+        (ele) => {
+            ele.addEventListener('click', () => {
+            console.log("Toggled dark mode");
+            storage_data.options.dark_mode = !storage_data.options.dark_mode;
+
+            document.body.setAttribute('data-bs-theme', !storage_data.options.dark_mode ? 'light' : 'dark');
+            Default.scrollbarTheme = dark_mode ? 'os-theme-light' : 'os-theme-dark';
+            OverlayScrollbarsGlobal.OverlayScrollbars(container, {
+                scrollbars: {
+                    theme: Default.scrollbarTheme
+                }
+            });
+        });
     });
 
     document.querySelectorAll('input[id^="option-"]').forEach((opt) => {
@@ -79,7 +127,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             let clicked_option = opt.id.replace("option-toggle-", "").replaceAll('-', '_');
             storage_data.options[clicked_option] = opt.checked;
             console.log(`storage_data.options[${clicked_option}] = ${opt.checked};`);
-
 
             browser.runtime.sendMessage({
                 "masked_cmd": "set_lists",
@@ -154,10 +201,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     );
 
-    document.getElementById('add-secrets-element').addEventListener("focus", () => {
-        selected_list = document.getElementById("secrets-element-list");
-        status_message("sec");
-    });
+    document.querySelectorAll('option[id^="lst_sec_ele"], option[id^="lst_rgx_ele"]').forEach(
+        (sel_ele) => {
+            console.log("we made it woo");
+            sel_ele.addEventListener("click", (e) => {
+                console.log(`Selected ${e.id}`);
+                focused_option = e;
+            });
+        }
+    );
+
+
 
     document.getElementById('add-regex-element').addEventListener("focus", () => {
         selected_list = document.getElementById("regex-element-list");

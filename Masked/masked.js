@@ -10,10 +10,14 @@ async function init() {
     });
 }
 
-do_masks();
+//do_masks();
 
 async function do_masks() {
     await init();
+    /*
+        Secrets:
+            - Search ID, name
+    */
     let found = [];
     let secrets = storage_data.lists.secrets;
     let regexes = storage_data.lists.regexes;

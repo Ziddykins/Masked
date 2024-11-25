@@ -1,11 +1,5 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
-function status_message(message) {
-    $('#status').innerText = message;
-    $("#status").fadeIn(2000);
-    $("#status").fadeOut(2000);
-}
-
 HTMLElement.prototype.sort_options = function() {
     Array.prototype.slice.call(this.options).sort(function(a, b) {
         return a.text > b.text ? 1 : a.text < b.text ? -1 : 0;
@@ -82,11 +76,11 @@ function populate_popup() {
         let secrets_ele_list = document.getElementById("secrets-element-list");
         let regex_ele_list   = document.getElementById("regex-element-list");
 
-        document.getElementById("option-toggle-secrets-in-regex").checked = storage_data.options.secrets_in_regex;
-        document.getElementById("option-toggle-regex-in-secrets").checked = storage_data.options.regex_in_secrets;
-        document.getElementById("option-toggle-mask-emails").checked      = storage_data.options.mask_emails;
-        document.getElementById("option-toggle-dark-mode").checked  = storage_data.options.dark_mode;
-        document.getElementById("option-toggle-enable-regex").checked     = storage_data.options.enable_regex;
+        document.getElementById("option-toggle-secrets-in-regex").checked  = storage_data.options.secrets_in_regex;
+        document.getElementById("option-toggle-regex-in-secrets").checked  = storage_data.options.regex_in_secrets;
+        document.getElementById("option-toggle-mask-emails").checked       = storage_data.options.mask_emails;
+        document.getElementById("option-toggle-dark-mode").checked         = storage_data.options.dark_mode;
+        document.getElementById("option-toggle-enable-regex").checked      = storage_data.options.enable_regex;
         document.getElementById("option-toggle-enable-secrets").checked    = storage_data.options.enable_secrets;
 
         for (let i=0; i<storage_data.lists.secrets.length; i++) {
@@ -107,8 +101,8 @@ function populate_popup() {
 
         for (let i=0; i<storage_data.lists.secrets_elements.length; i++) {
             let list_option = document.createElement('option');
-            list_option.id = `lst_rgx_ele_${i}`;
-            list_option.name = `lst_rgx_ele_${i}`;
+            list_option.id = `lst_sec_ele_${i}`;
+            list_option.name = `lst_sec_ele_${i}`;
             list_option.text = storage_data.lists.secrets_elements[i];
             secrets_ele_list.appendChild(list_option);
         }

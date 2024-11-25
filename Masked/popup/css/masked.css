@@ -16,12 +16,3 @@
     font-variation-settings:
       "wdth" 100;
   }
-
-/*    https://css-tricks.com/examples/hrs/    */
-/* Gradient transparent - color - transparent */
-
-hr {
-  border: 0;
-  height: 1px;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-}

@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self' gap:; script-src 'self' 'unsafe-eval'; object-src *; style-src 'self' data: 'unsafe-inline'; img-src 'self' data:; media-src 'self' data:; font-src 'self' https://fonts.gstatic.com/ data:; connect-src *;">
 
 		<script src="js/jquery-3.7.1.min.js" defer></script>
 		
@@ -354,19 +353,30 @@
 
 							<div class="row">
 								<div class="col mt-3">
-									<div class="btn-group" role="group" aria-label="suggestion-drop">
-										<div class="btn-group" role="group">
-											<button id="suggestion-type" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												Type
-											</button>
-											<div class="dropdown-menu" aria-labelledby="suggeston-type">
-												<a class="dropdown-item" href="#">Secret</a>
-												<a class="dropdown-item" href="#">Regex</a>
-												<a class="dropdown-item" href="#">Other</a>
-											</div>
-										</div>
+									<div class="input-group mb-3">
+										<label class="input-group-text" for="suggestion-type-dropdown">Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+										<select id="suggestion-type-dropdown" class="form-select">
+											<option selected>Choose...</option>
+											<option value="1">RegExp</option>
+											<option value="2">Secret</option>
+											<option value="3">Other</option>
+										</select>
+									</div>
+									  
+									<div class="input-group mb-3">
+										<span class="input-group-text">Example</span>
+										<input id="suggestion-example"name="suggestion-example" type="text" class="form-control" placeholder="http://example.com" aria-describedby="suggestion-example" />
+									</div>
+
+									<div class="input-group mb-3">
+										<span class="input-group-text">Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+										<input id="suggestion-input" name="suggestion-input" type="text" class="form-control" placeholder="/[Ii]nput ?[Hh],
+										/" aria-describedby="suggestion-input" />
 									</div>
 									
+									<div class="d-grid">
+										<button id="suggestion-submit" name="suggestion-submit" class="btn btn-primary">Submit</button>
+									</div>
 								</div>
 							</div>
 						</div>

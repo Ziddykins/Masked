@@ -43,7 +43,7 @@
             "Masked/background.js"            
         ]
     },
-
+    
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
@@ -63,8 +63,7 @@
             "Masked/resources/regexes.txt",
             "Masked/resources/secrets.txt"
         ],
-        "matches": ["<all_urls>"],
-        "extension_ids": []
+        "matches": ["<all_urls>"]
     }]
 }
 
