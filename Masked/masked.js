@@ -10,65 +10,44 @@ async function init() {
     });
 }
 
-//do_masks();
+do_masks();
 
 async function do_masks() {
     await init();
-    /*
-        Secrets:
-            - Search ID, name
-    */
+    let secrets_t = storage_data.lists.secrets;
+    let regexes_t = storage_data.lists.regexes;
+    let search_elements = [];
+    let search_regexes = [];
     let found = [];
-    let secrets = storage_data.lists.secrets;
-    let regexes = storage_data.lists.regexes;
 
     if (storage_data.options.enable_secrets === true) {
-        let sec_elements = storage_data.lists.secrets_elements;
-        let selector = '';
-        let page_elements = null;
-    
-        sec_elements.forEach((e) => {
-            selector += `${e},`;
-        }); 
-        selector = selector.replace(/,$/, "");
-    
-        page_elements = document.querySelectorAll(selector);
-
         if (storage_data.options.regex_in_secrets) {
             console.log("regex in secrets enabled, combining secrets and regexes");
-            secrets = [...secrets, ...regexes];
+            secrets = [...secrets_t, ...regexes_t];
         }
 
-        secrets.forEach((s) => {
-            page_elements.forEach((e) => {
-                let element_id = e.id;
-                let element_text = e.textContent;
+        search_regexes = secrets_t.map(secret => {
+            if (secret.startsWith("/")) {
+                const escapedSecret = secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return new RegExp(escapedSecret, 'gi');
+            } else {
+                let escapedSecret = secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return new RegExp(escapedSecret, 'gi');
+            }
+        });
 
-                console.log(`Searching ${element_id} for secret ${s}`);
+        document.querySelectorAll("*").forEach((e) => { if (e.id || e.name) { search_elements.push(e); }});
+        console.log(`Found ${search_elements.length} elements, and ${search_regexes.length} secrets to parse`);
 
-                console.log(`TExt content of element ${element_id}: ${element_text}`);
-
-                if (storage_data.options.mask_emails === false && s.match(/email/i)) {
-                    console.log(`Skipping secret '${s} due to masking email option disabled`);
-                    return;
-                }
-                
-                if (element_id && element_id.includes(s)) {
-                    console.log(`Found secrets in element ${element_id}`);
-                    found.push(element);
+        search_elements.forEach((e) => {
+            search_regexes.forEach((re) => {
+                let field = e.id || e.name;
+                console.log(`Testing ${field} for ${re.toString()}`);
+                if (re.test(e.id) || re.test(e.name)) {
+                    console.log(`Found secret '${re}' in element ${e.id || e.name}`);
+                    found.push(e);
                 }
             });
-                
-
-            /*           
-        
-        
-        
-                function(hit) {
-                    found.push(hit);
-                    console.log(`Found secrets ${hit}`);
-                }
-            );*/
         });
     }
 
@@ -80,13 +59,13 @@ async function do_masks() {
                 console.log("Adding secrets to regex search");
             });
         }
+
         storage_data.lists.regexes.forEach((regex) => {
             document.querySelectorAll("input, div, span").forEach(function(i) {
-                var input_val = i.value;
-                var input_len = i.length;
+                var input_val = i.value || i.textContent  || i.innerText;
                 var input_type = i.type;
 
-                if (input_len > 3 && input_type != "password" && input_type != "hidden") {
+                if (input_val.length && input_type != "password" && input_type != "hidden") {
                     let rgx = new RegExp(regex, "igm");
 
                     if (input_val.match(rgx)) {
@@ -121,6 +100,7 @@ async function do_masks() {
                 }
                 break;
             case 'div':
+            case 'span':
                 holder.setAttribute('value', f.textContent);
                 f.textContent = "*".repeat(f.textContent.length);
                 break;
@@ -129,14 +109,6 @@ async function do_masks() {
                 break;
         }
         f.before(holder);
-    });
-
-    regexes.forEach((r) => {
-        let found = [];
-        
-        if (document.body.innerText.matchAll(r)) {
-            
-        }
     });
     
     let update_icon = await browser.runtime.sendMessage({

@@ -22,11 +22,11 @@ function send_suggestion() {
         dataType: "json",
 
         success: function (response) {
-            status_message(response.resp);
+            status_message(response.resp, "success");
         },
         error: function (xhr, status, error) {
             console.error(xhr, status, error);
-            status_message(`Error: [${xhr.status}] ${xhr.statusText} - ${error}`);
+            status_message(`Error: [${xhr.status}] ${xhr.statusText} - ${error}`, "error");
         }
     });
 }
@@ -94,6 +94,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+
+    document.getElementById('suggestion-clear').addEventListener('click', () => {
+        document.getElementById("suggestion-input").value = "";
+        document.getElementById("suggestion-example").value = "";
+        document.getElementById("suggestion-type-dropdown").selectedIndex = 0;
+    });
 
     document.querySelectorAll('#option-toggle-dark-mode, #masked-logo').forEach(
         (ele) => {

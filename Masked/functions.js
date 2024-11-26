@@ -1,9 +1,12 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
-function status_message(message) {
+function status_message(message, type="default") {
+    let text_color = type === "success" ? "text-success" : type === "error" ? "text-danger" : "text-black";
+    $('#status').addClass(text_color);
     $('#status').html(message);
     $("#status").fadeIn(2000);
-    $("#status").fadeOut(2000);
+    $("#status").fadeOut(10000);
+    console.log(text_color);
 }
 
 HTMLElement.prototype.sort_options = function() {
