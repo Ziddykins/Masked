@@ -7,6 +7,8 @@ async function init() {
         storage_data = resp.masked_data;
         console.log("in content script, got data from storage:");
         console.log(storage_data);
+    }).catch((err) => {
+        console.error("Error getting storage data: ", err);
     });
 }
 
@@ -27,24 +29,20 @@ async function do_masks() {
         }
 
         search_regexes = secrets_t.map(secret => {
-            if (secret.startsWith("/")) {
-                const escapedSecret = secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                return new RegExp(escapedSecret, 'gi');
+            if (secret.startsWith("/") && secret.endsWith("/")) {
+                return new RegExp(secret.substring(1, secret.length - 1));
             } else {
-                let escapedSecret = secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                return new RegExp(escapedSecret, 'gi');
+                return new RegExp(secret);
             }
         });
 
-        document.querySelectorAll("*").forEach((e) => { if (e.id || e.name) { search_elements.push(e); }});
+        document.querySelectorAll("*").forEach((e) => { if (e.id || e.name) { search_elements.push(e); } });
         console.log(`Found ${search_elements.length} elements, and ${search_regexes.length} secrets to parse`);
 
         search_elements.forEach((e) => {
             search_regexes.forEach((re) => {
                 let field = e.id || e.name;
-                console.log(`Testing ${field} for ${re.toString()}`);
                 if (re.test(e.id) || re.test(e.name)) {
-                    console.log(`Found secret '${re}' in element ${e.id || e.name}`);
                     found.push(e);
                 }
             });
@@ -52,68 +50,98 @@ async function do_masks() {
     }
 
     if (storage_data.options.enable_regex) {
-        if (storage_data.options.secrets_in_regex) {
-            secrets.forEach((s) => {
-                let temp_sec = `/${s}/g`;
-                regexes.push(temp_sec);
-                console.log("Adding secrets to regex search");
-            });
-        }
-
-        storage_data.lists.regexes.forEach((regex) => {
-            document.querySelectorAll("input, div, span").forEach(function(i) {
-                var input_val = i.value || i.textContent  || i.innerText;
-                var input_type = i.type;
-
-                if (input_val.length && input_type != "password" && input_type != "hidden") {
-                    let rgx = new RegExp(regex, "igm");
-
-                    if (input_val.match(rgx)) {
-                        matched_regs++;
-                        found.push(i);
-                        console.log(`Found secrets ${i}`);
-                    }
-                }
-            });
-        });
+        await maskRegexMatches(); // Call the new function
     }
 
     found.forEach((f) => {
-        let holder = document.createElement("a");
-        holder.id = f.id + '-masked';
-        holder.innerHTML = '🧐';
-        holder.style.top = '51%';
-        holder.style.position = 'relative';
-        holder.style.zIndex = '300';
-        holder.style.left = "90%";
+        // Check if the emoji already exists
+        if (!document.getElementById(f.id + '-masked')) {
+            let holder = document.createElement("a");
+            holder.id = f.id + '-masked';
+            holder.innerHTML = '🧐';
+            holder.style.position = 'absolute'; // Use absolute positioning
+            holder.style.zIndex = '300';
+            holder.style.left = "100%"; // Position it to the right of the element
+            holder.marginLeft = "5px";
 
-        switch (f.tagName.toLowerCase()) {
-            case 'input':
-                if (f.type != 'password' && f.type != 'hidden') {
-                    holder.textContent = f.value;
-                    f.type = 'password';
+            switch (f.tagName.toLowerCase()) {
+                case 'input':
+                    if (f.type != 'password' && f.type != 'hidden') {
+                        holder.setAttribute('data-original', f.value); // Store original value
+                        f.type = 'password';
 
-                    holder.addEventListener("click", (e) => {
-                        console.log(e);
-                        navigator.clipboard.writeText(e.target.nextElementSibling.value);
-                    });
-                }
-                break;
-            case 'div':
-            case 'span':
-                holder.setAttribute('value', f.textContent);
-                f.textContent = "*".repeat(f.textContent.length);
-                break;
-            default:
-                holder.value = f.value;
-                break;
+                        holder.addEventListener("click", (e) => {
+                            navigator.clipboard.writeText(e.target.getAttribute('data-original'));
+                        });
+                    }
+                    break;
+                case 'div':
+                case 'span':
+                    holder.setAttribute('data-original', f.textContent); // Store original text
+                    f.textContent = "*".repeat(f.textContent.length);
+                    break;
+                default:
+                    holder.value = f.value;
+                    break;
+            }
+            f.style.position = 'relative'; // Ensure the parent element is positioned
+            f.before(holder);
         }
-        f.before(holder);
     });
-    
-    let update_icon = await browser.runtime.sendMessage({
+
+    await browser.runtime.sendMessage({
         "masked_cmd": "update_badge",
         "sender": "masked.js",
         "value": found.length
+    });
+}
+
+
+async function maskRegexMatches() {
+    let regexes = storage_data.lists.regexes;
+    let textNodes = [];
+
+    // Function to traverse the DOM and collect text nodes
+    function getTextNodes(node) {
+        if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== "") {
+            textNodes.push(node);
+        } else {
+            node.childNodes.forEach(getTextNodes);
+        }
+    }
+
+    // Start collecting text nodes from the body
+    getTextNodes(document.body);
+
+    textNodes.forEach((textNode) => {
+        regexes.forEach((regex) => {
+            let rgx = new RegExp(regex.trim(), 'igm');
+            console.log(rgx);
+            if (rgx.test(textNode.nodeValue)) {
+                let originalText = textNode.nodeValue;
+                let maskedText = originalText.replace(rgx, (match) => "*".repeat(match.length));
+
+                // Create a span to hold the masked text
+                let span = document.createElement("span");
+                span.textContent = maskedText;
+
+                // Create the emoji holder
+                let holder = document.createElement("a");
+                holder.innerHTML = '🧐';
+                holder.style.position = 'absolute'; // Use absolute positioning
+                holder.style.zIndex = '300';
+                holder.style.left = "100%"; // Position it to the right of the element
+                holder.style.marginLeft = '5px'; // Add some space
+
+                holder.setAttribute('data-original', originalText); // Store original text
+                holder.addEventListener("click", (e) => {
+                    navigator.clipboard.writeText(e.target.getAttribute('data-original'));
+                });
+
+                // Replace the original text node with the masked span
+                textNode.parentNode.replaceChild(span, textNode);
+                span.parentNode.insertBefore(holder, span.nextSibling);
+            }
+        });
     });
 }
