@@ -52,6 +52,12 @@ async function do_masks() {
     if (storage_data.options.enable_regex) {
         await maskRegexMatches(); // Call the new function
     }
+    
+    await browser.runtime.sendMessage({
+        "masked_cmd": "pop_window",
+        "sender": "masked.js",
+        "value": JSON.stringify(found)
+    });
 
     found.forEach((f) => {
         // Check if the emoji already exists

@@ -153,8 +153,19 @@ browser.runtime.onMessage.addListener(function (message, sender, senderResponse)
         browser.storage.local.set({ masked_data: message.data });
         console.log("Message from popup.js, saving storage");
         console.log(`data:`);
-        console.log(message.data);
         senderResponse(true);
         return true;
     }
+
+    if (message.masked_cmd == 'pop_window' && message.sender == 'masked.js') {
+        let found_elements = JSON.parse(message.value);
+        let ele_window = document.getElementById('found-items');
+        
+        found_elements.forEach(element => {
+            let new_ele = document.createElement('span');
+            new_ele.textContent = element.textContent;
+        });
+    }
+        
+
 });
