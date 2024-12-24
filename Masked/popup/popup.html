@@ -223,15 +223,24 @@
 								<div id="settings-content" name="settings-content" class="row overflow-hidden ms-2" style="max-height: 300px">
 									<div class="col overflow-hidden">
 										<div class="row">
-											<div class="col mt-3">
-												<div class="form-label">Max Depth</div>
-												<input id="option-max-depth" name="option-max-depth" type="range" min="1" max="35" class="form-range">
-											</div>
+											<div class="col-10">
+												<div class="form-label me-1">Max Depth 
+													<span id="option-depth-label" name="option-depth-label" class="form-label">(5)</span>
+												</div>
+												<input id="option-max-depth" name="option-max-depth" type="range" min="1" max="35" class="form-range" />
+										    </div>
+										</div>
+
+										<div class="row">
 											<div class="col mt-3">
 												<div class="form-check form-switch">
-                                                    <input id="option-toggle-override" name="option-toggle-override" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-toggle-override">Override</label>
-                                                </div>
+													<input id="option-toggle-exceed-max-depth" name="option-toggle-exceed-max-depth" class="form-check-input" type="checkbox" role="switch">
+													<label class="form-check-label" for="option-toggle-exceed-max-depth">Exceed max depth</label>
+												</div>
+
+												<small style="margin-left: 40px; font-size: 10px;">
+                                                    Allows the search to exceed the specified depth for nested elements.
+                                                </small>
 											</div>
 										</div>
 

@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await init();
     populate_popup();
     console.log("Masked Initialized");
+    
 
     const container = document.querySelector('#settings-content');
     const dark_mode = storage_data.options.dark_mode;
@@ -247,4 +248,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     });
+
+    document.getElementById('option-max-depth').oninput = () => {
+        document.getElementById('option-depth-label').innerText = ` (${document.getElementById('option-max-depth').value})`;
+    };
+
+    document.getElementById('option-toggle-exceed-max-depth').addEventListener('click', () => {
+        let override_enabled = document.getElementById('option-toggle-exceed-max-depth').checked;
+        
+        if (override_enabled) {
+            document.getElementById('option-max-depth').setAttribute('max', '1000');
+        } else {
+            document.getElementById('option-max-depth').setAttribute('max', '35');
+            document.getElementById('option-depth-label').innerText = ' (35)';
+        }
+    });
+        
+//    document.getElementById('option-max-depth').addEventListener('mousemove', 
+//        async function() {
+//            let cur_value_label = document.getElementById('option-depth-label');
+//            function sleep(ms) {
+//                console.log("boing");
+//                cur_value_label.innerText = document.getElementById('option-max-depth').value
+//                return new Promise(resolve => setTimeout(resolve, ms));
+//            }
+//            
+//            async function debounce_label() {
+//
+//                for (let i = 0; i < 5; i++) {
+//                    await sleep(i * 100);   
+//                }
+//            }
+//            
+//            let override_enabled = document.getElementById('option-toggle-exceed-max-depth').checked;
+//            if (override_enabled) {
+//                debounce_label();
+//            }
+//        }
+//    );
 });

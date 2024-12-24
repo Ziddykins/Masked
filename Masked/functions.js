@@ -1,11 +1,12 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
 function status_message(message, type="default") {
+    $('#status').toggleClass(/text-\w+/g);
     let text_color = type === "success" ? "text-success" : type === "error" ? "text-danger" : "text-black";
     $('#status').addClass(text_color);
     $('#status').html(message);
     $("#status").fadeIn(2000);
-    $("#status").fadeOut(10000);
+    $("#status").fadeOut(1000);
     console.log(text_color);
 }
 
