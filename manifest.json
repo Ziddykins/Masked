@@ -13,7 +13,7 @@
         },
         gecko_android: {
             id: masked_adr@memelife.ca,
-            strict_min_version: 1
+            strict_min_version: 134.0
         }
     },
 

@@ -5,24 +5,25 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<script src="js/jquery-3.7.1.min.js" defer></script>
-		
+
 		<link rel="stylesheet" href="css/bootstrap-icons.min.css">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/overlayscrollbars.min.css">
 		<link rel="stylesheet" href="css/masked.css">
 		<link rel="stylesheet" href="css/window.css">
 
-		<script src="js/bootstrap.bundle.min.js"></script>		
+		<script src="js/bootstrap.bundle.min.js"></script>
 		<script src="js/overlayscrollbars.browser.es6.min.js" defer></script>
 	</head>
 
-	<body class="inconsolata shadow border border-black " data-bs-theme="light" style="width: 750px; height: 445px; overflow: hidden;">
+	<body class="inconsolata shadow border border-black " data-bs-theme="light"
+		style="width: 750px; height: 445px; overflow: hidden;">
 		<div class="bg-primary bg-gradient text-white border border-black">
 			<div class="d-flex justify-content-center align-content-center p-1">
 				<div>
 					<img id="masked-logo" name="masked-logo" src="../icons/icons8-mask2-32.png" />
 				</div>
-				
+
 				<div class="ms-2">
 					<h4 class="pt-1">Masked</h4>
 				</div>
@@ -32,44 +33,52 @@
 		<div class="container-fluid">
 			<div id="plugin-content" name="plugin-content" class="row mb-3" style="min-height: 400px;">
 				<div class="col-4" style="margin-left: -12px;">
-					<div id="list-tab" class="list-group"  style="border-top-left-radius: 0%;" role="tablist">
-						<a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">
+					<div id="list-tab" class="list-group" style="border-top-left-radius: 0%;" role="tablist">
+						<a class="list-group-item list-group-item-action active" id="list-home-list"
+							data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">
 							<i class="bi bi-house me-2"></i> | Home
 						</a>
-						<a class="list-group-item list-group-item-action" id="list-secrets-list" data-bs-toggle="list" href="#list-secrets" role="tab" aria-controls="list-secrets">
+						<a class="list-group-item list-group-item-action" id="list-secrets-list" data-bs-toggle="list"
+							href="#list-secrets" role="tab" aria-controls="list-secrets">
 							<i class="bi bi-file-lock2 me-2"></i> | Secrets
 						</a>
-						<a class="list-group-item list-group-item-action" id="list-regex-list" data-bs-toggle="list" href="#list-regex" role="tab" aria-controls="list-regex">
+						<a class="list-group-item list-group-item-action" id="list-regex-list" data-bs-toggle="list"
+							href="#list-regex" role="tab" aria-controls="list-regex">
 							<i class="bi bi-braces-asterisk me-2"></i> | Regex
 						</a>
 
-						<a class="list-group-item list-group-item-action" id="list-elements-list" data-bs-toggle="list" href="#list-elements" role="tab" aria-controls="list-elements">
+						<a class="list-group-item list-group-item-action" id="list-elements-list" data-bs-toggle="list"
+							href="#list-elements" role="tab" aria-controls="list-elements">
 							<i class="bi bi-bar-chart-steps me-2"></i> | Elements
 						</a>
 
-						<a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">
+						<a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list"
+							href="#list-settings" role="tab" aria-controls="list-settings">
 							<i class="bi bi-sliders me-2"></i> | Settings
 						</a>
 
-						<a class="list-group-item list-group-item-action" id="list-suggestions-list" data-bs-toggle="list" href="#list-suggestions" role="tab" aria-controls="list-suggestions">
+						<a class="list-group-item list-group-item-action" id="list-suggestions-list"
+							data-bs-toggle="list" href="#list-suggestions" role="tab" aria-controls="list-suggestions">
 							<i class="bi bi-chat-square-dots-fill me-2"></i> | Suggest
 						</a>
 
-						<a class="list-group-item list-group-item-action" id="list-credits-list" data-bs-toggle="list" href="#list-credits" role="tab" aria-controls="list-credits">
-							<i class="bi bi-blockquote-left me-2"></i> | Credits
+						<a class="list-group-item list-group-item-action" id="list-exclude-list" data-bs-toggle="list"
+							href="#list-exclude" role="tab" aria-controls="list-exclude">
+							<i class="bi bi-blockquote-left me-2"></i> | Exclude
 						</a>
 
-						<a class="list-group-item list-group-item-action opacity-50" id="list-logs-list" data-bs-toggle="list" href="#list-logs" role="tab" aria-controls="list-logs">
+						<a class="list-group-item list-group-item-action opacity-50" id="list-logs-list"
+							data-bs-toggle="list" href="#list-logs" role="tab" aria-controls="list-logs">
 							<i class="bi bi-journal-text me-2"></i> | Logs
 						</a>
 
-						<small id="status" class="text-center text-wrap border mt-1" style="width: 225px; min-height: 100px;">
-							
+						<small id="status" class="text-center text-wrap border mt-1" style="width: 223px; min-height: 100px;">
+
 						</small>
 					</div>
 				</div>
 
-				<div id="masked-container" class="col-6 border pt-3" style="width: calc(100% - 285px + 45px);">
+				<div id="masked-container" class="col-6 border pt-3" style="width: calc(100% - 285px + 45px); position: relative; left: -14px;">
 					<div id="nav-tabContent" class="tab-content overflow-hidden">
 						<div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
 							<div class="row">
@@ -77,16 +86,27 @@
 									<div class="lead float-end">Masked</div>
 								</div>
 							</div>
-							<div class="row mb-3">
+							<div class="row mb-1">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
-
-							A simple plugin to convert sensitive information on the screen to a <span class="text-primary">Masked</span> format.
-							The <span class="text-primary">Masked</span> value can then easily be copied to your clipboard via small icon, which
-							is added into the element which was masked.	Customize your mask, add your own regular expressions and keywords and
-							no longer worry about shoulder-surfers, or people watching your streams.
+							A simple plugin to convert sensitive information on the screen to a
+							<span class="text-primary">Masked</span> format. The <span class="text-primary">Masked</span>
+							value can then easily be copied to your	clipboard via small icon, which
+							is added into the element which was masked. Customize your mask, add your own regular
+							expressions and keywords and no longer worry about shoulder-surfers, or people watching your streams.<br>
+							Most of the	regular expressions and ID compositions have been compiled from
+							<span class="text-primary text-decoration-none">
+								<small>
+									<a href="https://raw.githubusercontent.com/gitleaks/gitleaks/master/config/gitleaks.toml">GitLeaks</a>
+								</small>
+							</span>	& <span class="text-primary text-decoration-none">
+								<small>
+									<a href="https://github.com/SecLists">SecLists (ID's).</a>
+								</small>
+							</span>
+							Some of the ID's are collected from websites I use, and some are submitted from the community.<br>
 						</div>
 
 						<div class="tab-pane fade overflow-hidden" id="list-secrets" role="tabpanel" aria-labelledby="list-secrets-list">
@@ -97,14 +117,15 @@
 							</div>
 							<div class="row mb-3">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
 							<div class="row me-4 mt-3">
 								<div class="col">
 									<div class="input-group">
 										<span class="input-group-text">Secrets</span>
-										<select id="secrets-list" name="secrets-list" class="form-select" size="8" aria-label="Secrets" multiple ></select>
+										<select id="secrets-list" name="secrets-list" class="form-select" size="8"
+											aria-label="Secrets" multiple></select>
 									</div>
 
 									<div class="input-group">
@@ -113,18 +134,22 @@
 									</div>
 								</div>
 							</div>
-							
+
 							<div class="row mt-3">
 								<div class="col text-center">
 									<div class="btn-group btn-group-sm" role="group" aria-label="Secrets Group">
-										<button id="secrets-append" name="secrets-append" class="btn btn-success" type="button">Append</button>
-										<button id="secrets-clear"  name="secrets-clear"  class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modal-clear">Clear</button>
-										<button id="secrets-remove" name="secrets-remove" class="btn btn-danger"  type="button">Remove</button>
+										<button id="secrets-append" name="secrets-append" class="btn btn-success"
+											type="button">Append</button>
+										<button id="secrets-clear" name="secrets-clear" class="btn btn-warning"
+											type="button" data-bs-toggle="modal"
+											data-bs-target="#modal-clear">Clear</button>
+										<button id="secrets-remove" name="secrets-remove" class="btn btn-danger"
+											type="button">Remove</button>
 									</div>
 								</div>
 							</div>
 						</div>
-				
+
 						<div id="list-regex" class="tab-pane fade overflow-hidden" role="tabpanel" aria-labelledby="list-regex-list">
 							<div class="row">
 								<div class="col">
@@ -133,7 +158,7 @@
 							</div>
 							<div class="row mb-3">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
 
@@ -141,9 +166,10 @@
 								<div class="col">
 									<div class="input-group">
 										<span class="input-group-text">Regex</span>
-										<select id="regex-list" name="regex-list" class="form-select" size="8" aria-label="Regex" multiple></select>
+										<select id="regex-list" name="regex-list" class="form-select" size="8"
+											aria-label="Regex" multiple></select>
 									</div>
-									
+
 									<div class="input-group">
 										<span class="input-group-text text-bg-secondary">Add</span>
 										<span class="input-group-text text-bg-secondary">/</span>
@@ -152,61 +178,74 @@
 									</div>
 								</div>
 							</div>
-							
+
 							<div class="row">
 								<div class="col text-center">
 									<div class="btn-group btn-group-sm" role="group" aria-label="Secrets Group">
-										<button id="regex-append" name="regex-append" class="btn btn-success" type="button">Append</button>
-										<button id="regex-clear"  name="regex-clear"  class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modal-clear">Clear</button>
-										<button id="regex-remove" name="regex-remove" class="btn btn-danger"  type="button">Remove</button>
+										<button id="regex-append" name="regex-append" class="btn btn-success"
+											type="button">Append</button>
+										<button id="regex-clear" name="regex-clear" class="btn btn-warning"
+											type="button" data-bs-toggle="modal"
+											data-bs-target="#modal-clear">Clear</button>
+										<button id="regex-remove" name="regex-remove" class="btn btn-danger"
+											type="button">Remove</button>
 									</div>
 								</div>
 							</div>
 						</div>
 
 						<div class="tab-pane fade" id="list-elements" role="tabpanel" aria-labelledby="list-elements-list">
-							<div id="elements-pane" name="elements-pane" class="container">
-								<div class="row">
-									<div class="col">
-										<div class="lead float-end">Elements</div>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col">
-										<img src="./img/underline.png" class="float-end"/>
-									</div>
-								</div>
 
-								<div class="row mb-3">
-									<div class="col me-3">
-										<select id="secrets-element-list" name="secrets-element-list" class="form-select" size="8" aria-label="Regex" multiple></select>
-										<div class="input-group">
-											<span class="input-group-text text-bg-secondary"><i class="bi bi-arrow-right-circle"></i></span>
-											<input id="add-secrets-element" name="add-secrets-element" type="text" class="form-control" />
-										</div>
-									</div>
+							<div class="row">
+								<div class="col">
+									<div class="lead float-end">Elements</div>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col">
+									<img src="./img/underline.png" class="float-end" />
+								</div>
+							</div>
 
-									<div class="col">
-										<select id="regex-element-list" name="regex-element-list" class="form-select" size="8" aria-label="Regex Element" multiple></select>
-										<div class="input-group">
-											<span class="input-group-text text-bg-secondary"><i class="bi bi-arrow-right-circle"></i></span>
-											<input id="add-regex-element" name="add-regex-element" type="text" class="form-control" />
-										</div>
+							<div class="row mb-3">
+								<div class="col me-3">
+									<select id="secrets-element-list" name="secrets-element-list"
+										class="form-select" size="8" aria-label="Regex" multiple></select>
+									<div class="input-group">
+										<span class="input-group-text text-bg-secondary"><i
+												class="bi bi-arrow-right-circle"></i></span>
+										<input id="add-secrets-element" name="add-secrets-element" type="text"
+											class="form-control" />
 									</div>
 								</div>
 
-								<div class="row">
-									<div class="col text-center">
-										<div class="btn-group btn-group-sm" role="group" aria-label="Secrets Group">
-											<button id="ele-append" name="ele-append" class="btn btn-success" type="button">Append</button>
-											<button id="ele-clear"  name="ele-clear"  class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modal-clear">Clear</button>
-											<button id="ele-remove" name="ele-remove" class="btn btn-danger"  type="button">Remove</button>
-										</div>
+								<div class="col">
+									<select id="regex-element-list" name="regex-element-list" class="form-select"
+										size="8" aria-label="Regex Element" multiple></select>
+									<div class="input-group">
+										<span class="input-group-text text-bg-secondary"><i
+												class="bi bi-arrow-right-circle"></i></span>
+										<input id="add-regex-element" name="add-regex-element" type="text"
+											class="form-control" />
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col text-center">
+									<div class="btn-group btn-group-sm" role="group" aria-label="Secrets Group">
+										<button id="ele-append" name="ele-append" class="btn btn-success"
+											type="button">Append</button>
+										<button id="ele-clear" name="ele-clear" class="btn btn-warning"
+											type="button" data-bs-toggle="modal"
+											data-bs-target="#modal-clear">Clear</button>
+										<button id="ele-remove" name="ele-remove" class="btn btn-danger"
+											type="button">Remove</button>
 									</div>
 								</div>
 							</div>
 						</div>
-				
+
 						<div class="tab-pane fade overflow-auto" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
 							<div id="settings-pane" name="settings-pane" class="container">
 								<div class="row">
@@ -216,150 +255,173 @@
 								</div>
 								<div class="row mb-3">
 									<div class="col">
-										<img src="./img/underline.png" class="float-end"/>
+										<img src="./img/underline.png" class="float-end" />
 									</div>
 								</div>
 
 								<div id="settings-content" name="settings-content" class="row overflow-hidden ms-2" style="max-height: 300px">
-									<div class="col overflow-hidden">
-										<div class="row">
-											<div class="col-10">
-												<div class="form-label me-1">Max Depth 
-													<span id="option-depth-label" name="option-depth-label" class="form-label">(5)</span>
-												</div>
-												<input id="option-max-depth" name="option-max-depth" type="range" min="1" max="35" class="form-range" />
-										    </div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-exceed-max-depth" name="option-toggle-exceed-max-depth" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-toggle-exceed-max-depth">Exceed max depth</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-                                                    Allows the search to exceed the specified depth for nested elements.
-                                                </small>
+									<div class="row overflow-hidden">
+										<div class="col-10">
+											<div class="form-label me-1">Max Depth
+												<span id="option-depth-label" name="option-depth-label" class="form-label">(5)</span>
 											</div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-enable-secrets" name="option-enable-secrets" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-enable-secrets">Enable secrets Searching</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Uses the list of <a href="#list-secrets">secrets</a> to search for matching <a href="#list-elements">elements</a>
-												</small>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-enable-regex" name="option-enable-regex" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-enable-regex">Enable Regex Searching</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Uses the list of <a href="#list-regex">regular expressions</a> to search for matching <a href="#list-elements">elements</a>
-												</small>
-
-
-											</div>
-										</div>
-
-										<div class="row mb-3 me-4 mt-3">
-											<div class="col">
-												<div class="form-check form-switch">
-													<input id="option-toggle-secrets-in-regex" name="option-secrets-in-regex" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-secrets-in-regex">Include Secrets in Regex Search</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Any secrets which are to be searched for in ID's, will also be added to the regex list
-												</small>
-											</div>
-										</div>
-
-										<div class="row mb-3 me-4 mt-3">
-											<div class="col">
-												<div class="form-check form-switch">
-													<input id="option-toggle-regex-in-secrets" name="option-regex-in-secrets" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-regex-in-secrets">Include Regex in Secrets Search</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Any regex which are to be searched for in ID's, will also be added to the secrets list
-												</small>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-mask-emails" name="option-mask-emails" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-mask-emails">Mask emails</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Fields which are detected as email fields will be masked as well
-												</small>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-enable-window" name="option-enable-window" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-enable-window">Results Window</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Toggles small hidable window which will contain all the matches from both secrets and regex's
-												</small>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col mt-3">
-												<div class="form-check form-switch">
-													<input id="option-toggle-dark-mode" name="option-toggle-dark-mode" class="form-check-input" type="checkbox" role="switch">
-													<label class="form-check-label" for="option-toggle-dark-mode">Dark Mode</label>
-												</div>
-
-												<small style="margin-left: 40px; font-size: 10px;">
-													Toggles between dark and light themes
-												</small>
-											</div>
+											<input id="option-max-depth" name="option-max-depth" type="range" min="1" max="35" class="form-range" />
 										</div>
 									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-exceed-max-depth"
+													name="option-toggle-exceed-max-depth" class="form-check-input"
+													type="checkbox" role="switch">
+												<label class="form-check-label"
+													for="option-toggle-exceed-max-depth">Exceed max depth</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Allows the search to exceed the specified depth for nested elements.
+											</small>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-enable-secrets"
+													name="option-enable-secrets" class="form-check-input"
+													type="checkbox" role="switch">
+												<label class="form-check-label" for="option-enable-secrets">Enable
+													secrets Searching</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Uses the list of <a href="#list-secrets">secrets</a> to search for
+												matching <a href="#list-elements">elements</a>
+											</small>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-enable-regex" name="option-enable-regex"
+													class="form-check-input" type="checkbox" role="switch">
+												<label class="form-check-label" for="option-enable-regex">Enable
+													Regex Searching</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Uses the list of <a href="#list-regex">regular expressions</a> to
+												search for matching <a href="#list-elements">elements</a>
+											</small>
+
+
+										</div>
+									</div>
+
+									<div class="row mb-3 me-4 mt-3">
+										<div class="col">
+											<div class="form-check form-switch">
+												<input id="option-toggle-secrets-in-regex"
+													name="option-secrets-in-regex" class="form-check-input"
+													type="checkbox" role="switch">
+												<label class="form-check-label"
+													for="option-secrets-in-regex">Include Secrets in Regex
+													Search</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Any secrets which are to be searched for in ID's, will also be added
+												to the regex list
+											</small>
+										</div>
+									</div>
+
+									<div class="row mb-3 me-4 mt-3">
+										<div class="col">
+											<div class="form-check form-switch">
+												<input id="option-toggle-regex-in-secrets"
+													name="option-regex-in-secrets" class="form-check-input"
+													type="checkbox" role="switch">
+												<label class="form-check-label"
+													for="option-regex-in-secrets">Include Regex in Secrets
+													Search</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Any regex which are to be searched for in ID's, will also be added
+												to the secrets list
+											</small>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-mask-emails" name="option-mask-emails"
+													class="form-check-input" type="checkbox" role="switch">
+												<label class="form-check-label" for="option-mask-emails">Mask
+													emails</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Fields which are detected as email fields will be masked as well
+											</small>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-enable-window" name="option-enable-window"
+													class="form-check-input" type="checkbox" role="switch">
+												<label class="form-check-label" for="option-enable-window">Results
+													Window</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Toggles small hidable window which will contain all the matches from
+												both secrets and regex's
+											</small>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col mt-3">
+											<div class="form-check form-switch">
+												<input id="option-toggle-dark-mode" name="option-toggle-dark-mode"
+													class="form-check-input" type="checkbox" role="switch">
+												<label class="form-check-label" for="option-toggle-dark-mode">Dark
+													Mode</label>
+											</div>
+
+											<small style="margin-left: 40px; font-size: 10px;">
+												Toggles between dark and light themes
+											</small>
+										</div>
+									</div>
+								
 								</div>
 							</div>
 						</div>
 
-						<div class="tab-pane fade" id="list-credits" role="tabpanel" aria-labelledby="list-credits-list">
+						<div class="tab-pane fade" id="list-exclude" role="tabpanel" aria-labelledby="list-exclude-list">
 							<div class="row">
 								<div class="col">
-									<div class="lead float-end">Credits</div>
+									<div class="lead float-end">Exclude</div>
 								</div>
 							</div>
 							<div class="row mb-3">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
 
 							<div class="row">
 								<div class="col mt-3">
 									<div class="text-center">
-										Most of the regular expressions and ID compositions have been collected compiled from SecLists & gitleaks<br>
-										Some of the ID's are collected from websites I use<br>
-										<small><a href="https://raw.githubusercontent.com/gitleaks/gitleaks/master/config/gitleaks.toml">GitLeaks .toml (Regex)</a></small><br>
-										<small><a href="https://github.com/SecLists">SecLists (ID's)</a></small>
+
 									</div>
 								</div>
 							</div>
@@ -373,19 +435,19 @@
 							</div>
 							<div class="row mb-3">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
 
 							<div class="row">
 								<div class="col mt-3">
 									<div class="input-group">
-										<textarea id="logs" name="logs" class="form-control" rows="10" readonly></textarea>
+										<textarea id="logs" name="logs" class="form-control" rows="10"
+											readonly></textarea>
 									</div>
 								</div>
 							</div>
 						</div>
-
 
 
 						<div class="tab-pane fade" id="list-suggestions" role="tabpanel" aria-labelledby="list-suggestions-list">
@@ -396,14 +458,15 @@
 							</div>
 							<div class="row mb-3">
 								<div class="col">
-									<img src="./img/underline.png" class="float-end"/>
+									<img src="./img/underline.png" class="float-end" />
 								</div>
 							</div>
 
 							<div class="row">
 								<div class="col mt-3">
 									<div class="input-group mb-3">
-										<label class="input-group-text" for="suggestion-type-dropdown">Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+										<label class="input-group-text"
+											for="suggestion-type-dropdown">Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 										<select id="suggestion-type-dropdown" class="form-select">
 											<option selected>Choose...</option>
 											<option value="1">RegExp</option>
@@ -411,20 +474,26 @@
 											<option value="3">Other</option>
 										</select>
 									</div>
-									  
+
 									<div class="input-group mb-3">
 										<span class="input-group-text">Example</span>
-										<input id="suggestion-example"name="suggestion-example" type="text" class="form-control" placeholder="http://example.com" aria-describedby="suggestion-example" />
+										<input id="suggestion-example" name="suggestion-example" type="text"
+											class="form-control" placeholder="http://example.com"
+											aria-describedby="suggestion-example" />
 									</div>
 
 									<div class="input-group mb-3">
 										<span class="input-group-text">Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-										<input id="suggestion-input" name="suggestion-input" type="text" class="form-control" placeholder="/[Ii]nput ?[Hh],/" aria-describedby="suggestion-input" />
+										<input id="suggestion-input" name="suggestion-input" type="text"
+											class="form-control" placeholder="/[Ii]nput ?[Hh],/"
+											aria-describedby="suggestion-input" />
 									</div>
-									
+
 									<div class="text-center">
-										<button id="suggestion-clear" name="suggestion-clear" class="btn btn-secondary me-3">Clear</button>
-										<button id="suggestion-submit" name="suggestion-submit" class="btn btn-primary">Submit</button>
+										<button id="suggestion-clear" name="suggestion-clear"
+											class="btn btn-secondary me-3">Clear</button>
+										<button id="suggestion-submit" name="suggestion-submit"
+											class="btn btn-primary">Submit</button>
 									</div>
 								</div>
 							</div>
@@ -434,18 +503,20 @@
 			</div>
 		</div>
 
-		<div class="modal fade" id="modal-clear" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modal-clear-title" aria-hidden="true">
+		<div class="modal fade" id="modal-clear" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+			role="dialog" aria-labelledby="modal-clear-title" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header text-bg-danger bg-gradient">
 						<h5 class="modal-title" id="modal-clear-title">Danger!</h5>
-						<button	type="button" class="btn-close"	data-bs-dismiss="modal"	aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						Are you sure you want to clear this list? This cannot be undone!
 					</div>
 					<div class="modal-footer">
-						<button	id="modal-clear" type="button" class="btn btn-danger ps-4 pe-4" data-bs-dismiss="modal">Yes</button>
+						<button id="modal-clear" type="button" class="btn btn-danger ps-4 pe-4"
+							data-bs-dismiss="modal">Yes</button>
 						<button type="button" class="btn btn-secondary ps-4 pe-4" data-bs-dismiss="modal">No</button>
 					</div>
 				</div>
@@ -458,12 +529,13 @@
 				<i class="bi bi-brightness-alt-low-fill"></i><button class="round red"></button>
 			</div>
 			<div id="found-items" name="found-items" class="window-content">
-				
+
 
 			</div>
 		</div>
 
 		<script src="../functions.js"></script>
-		<script src="js/popup.js"></script>	
+		<script src="js/popup.js"></script>
 	</body>
+
 </html>

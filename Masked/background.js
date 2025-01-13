@@ -6,7 +6,7 @@ var storage_data = {
         secrets: [],
         regex_elements: [],
         secrets_elements: [],
-        blacklist: [],
+        exclude: [],
     },
 
     options: {
@@ -30,7 +30,19 @@ var storage_data = {
     creds: null
 };
 
-function handle_ctx_menus() { 
+function handle_ctx_menus() {
+    let [sub, apex, tld, hostname] = ['','','',''];
+    hostname = window.location.hostname;
+    let splits = hostname.split(".");
+    if (splits.length > 2) {
+        sub = splits[0];
+    } else {
+        apex = [0];
+    }
+    tld = splits[splits.length - 1];
+
+    console.log(`sub: ${sub}, apex: ${apex}, tld: ${tld}, hostname: ${hostname}`);
+    
     browser.contextMenus.create({
         id: "ctx_masked",
         title: "\x1F[ Masked 🥸]",
@@ -44,20 +56,20 @@ function handle_ctx_menus() {
     });
 
     browser.contextMenus.create({
-        id: "ctx_blacklist_domain",
-        title: "Blacklist entire domain",
+        id: "ctx_exclude_domain",
+        title: "Exclude entire domain",
         contexts: ["link"]
     });
 
     browser.contextMenus.create({
-        id: "ctx_blacklist_sub",
-        title: "Blacklist all sub-domains (*." + window.location.hostname + ")",
+        id: "ctx_exclude_sub",
+        title: `Exclude all sub-domains (*.${window.location.hostname})`,
         contexts: ["link"]
     });
 
     browser.contextMenus.create({
-        id: "ctx_blacklist_sub",
-        title: "Blacklist this exact link (" + window.location.href + ")",
+        id: "ctx_exclude_sub",
+        title: `Exclude this exact link (${window.location.href})`,
         contexts: ["link"]
     });
 
@@ -83,7 +95,7 @@ function handle_install() {
         "Masked/resources/secrets.txt",
         "Masked/resources/regex_elements.txt",
         "Masked/resources/secrets_elements.txt",
-        "Masked/resources/blacklist.txt",
+        "Masked/resources/exclude.txt",
     ];
 
     console.log(JSON.stringify(storage_data));
@@ -123,27 +135,49 @@ function handle_install() {
 browser.runtime.onInstalled.addListener(handle_install);
 
 /*browser.menus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === "mnu_blacklist_this") {
+    if (info.menuItemId === "mnu_exclude_this") {
         browser.tabs.update(tab.id, { url: info.linkUrl });
     }
 });*/
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-    console.log(`CTX info ${info} tab ${tab}`);
+    let match_rgx = /(.*?)\.(.*?)\.(.*?)\//;
+    let rgx = new RegExp(match_rgx, "g");
+    let [sub, apex, tld] = info.linkUrl.match(rgx);
+    
+    switch(info.menuItemId) {
+        case "ctx_exclude_domain":
+            console.log("Excludeing domain");
+            storage_data.lists.exclude.push(window.location.hostname);
+            break;
+        case "ctx_exclude_sub":
+            console.log("Excludeing sub-domain");
+            break;
+        case "ctx_":
+            console.log("Excludeing link");
+            break;
+        default:
+            console.log("nope");
+    }
+
+    console.log("info");
+    console.log(info);
+    console.log("Tab");
+    console.log(tab);
 });
 
-browser.runtime.onMessage.addListener(function (message, sender, senderResponse) {
+browser.runtime.onMessage.addListener((message, sender, senderResponse) => {
     if (message.masked_cmd == "get_lists") {
         if (message.sender == "masked.js") {
             const tab_id = sender.tab.id;
             const reply_msg = browser.tabs.sendMessage(tab_id, storage_data);
 
             reply_msg.then((response) => {
-                    console.log(`background.js: got response from tab ${tab_id}: ${response}`);
-                }).catch((error) => {
-                    console.error(`background.js: ${error}`);
-                });
-        }   
+                console.log(`background.js: got response from tab ${tab_id}: ${response}`);
+            }).catch((error) => {
+                console.error(`background.js: ${error}`);
+            });
+        }
 
         senderResponse(storage_data);
         return true;
@@ -162,6 +196,7 @@ browser.runtime.onMessage.addListener(function (message, sender, senderResponse)
     }
 
     if (message.masked_cmd == "set_lists" && message.sender == "popup.js") {
+        console.log(message.data);
         browser.storage.local.set({ masked_data: message.data });
         console.log("Message from popup.js, saving storage");
         console.log(`data:`);

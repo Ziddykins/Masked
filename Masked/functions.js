@@ -1,13 +1,20 @@
 console.log(Date.now() + " " + document.currentScript.src);
 
 function status_message(message, type="default") {
-    $('#status').toggleClass(/text-\w+/g);
-    let text_color = type === "success" ? "text-success" : type === "error" ? "text-danger" : "text-black";
-    $('#status').addClass(text_color);
+    let text_color = 'text-black';
+
+    if (type == "success") {
+        text_color = "text-success";
+    } else {
+        text_color = "error";
+    }
+
     $('#status').html(message);
     $("#status").fadeIn(2000);
     $("#status").fadeOut(1000);
-    console.log(text_color);
+    $("#status")[0]
+        .attributes[1]
+        .nodeValue.replace(/text-(black|success|danger)/, 'text-black');
 }
 
 HTMLElement.prototype.sort_options = function() {
@@ -86,12 +93,36 @@ function populate_popup() {
         let secrets_ele_list = document.getElementById("secrets-element-list");
         let regex_ele_list   = document.getElementById("regex-element-list");
 
-        document.getElementById("option-toggle-secrets-in-regex").checked  = storage_data.options.secrets_in_regex;
-        document.getElementById("option-toggle-regex-in-secrets").checked  = storage_data.options.regex_in_secrets;
-        document.getElementById("option-toggle-mask-emails").checked       = storage_data.options.mask_emails;
-        document.getElementById("option-toggle-dark-mode").checked         = storage_data.options.dark_mode;
-        document.getElementById("option-toggle-enable-regex").checked      = storage_data.options.enable_regex;
-        document.getElementById("option-toggle-enable-secrets").checked    = storage_data.options.enable_secrets;
+        let max_depth        = document.getElementById("option-max-depth");
+        let depth_label      = document.getElementById("option-depth-label");
+
+        max_depth.value      = storage_data.options.max_depth;
+        depth_label.innerText = ` (${storage_data.options.max_depth})`;
+
+        let toggle_switches = [
+            'secrets-in-regex',
+            'regex-in-secrets',
+            'mask-emails',
+            'dark-mode',
+            'enable-regex',
+            'enable-secrets',
+            'exceed-max-depth'
+        ];
+
+        for (const key in toggle_switches) {
+            let selector = 'option-toggle-' + toggle_switches[key];
+            let toggle_switch = document.getElementById(selector);
+            let stored_val = storage_data.options[toggle_switches[key].replaceAll("-", "_")];
+            toggle_switch.checked = stored_val;
+
+            console.log(`settings toggle_switches[${key}] = ${toggle_switches[key].replaceAll("-", "_")}`);
+        }
+
+        if (document.getElementById('option-toggle-exceed-max-depth').checked === true) {
+            max_depth.max = max_depth.value;
+        } else {
+            max_depth.max = 35;
+        }
 
         for (let i=0; i<storage_data.lists.secrets.length; i++) {
             let list_option = document.createElement('option');
