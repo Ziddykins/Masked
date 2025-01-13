@@ -120,9 +120,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.querySelectorAll('input[id^="option-"]').forEach((opt) => {
         opt.addEventListener("click", () => {
-            let clicked_option = opt.id.replace("option-toggle-", "").replaceAll('-', '_');
-            storage_data.options[clicked_option] = opt.checked;
-            console.log(`storage_data.options[${clicked_option}] = ${opt.checked};`);
+            let clicked_option = opt.id.replace('option-', '');
+
+            if (clicked_option.match(/toggle-/)) {
+                clicked_option.replace('toggle-', '');
+                storage_data.options[clicked_option] = opt.checked;
+            } else {
+                clicked_option.replace('toggle-', '');
+                storage_data.options[clicked_option] = opt.value
+            }
+            
+            console.log(`storage_data.options[${clicked_option}] ${storage_data.options[clicked_option]}`);
 
             browser.runtime.sendMessage({
                 "masked_cmd": "set_lists",
@@ -251,39 +259,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById('option-max-depth').oninput = () => {
         document.getElementById('option-depth-label').innerText = ` (${document.getElementById('option-max-depth').value})`;
+        storage_data.options.max_depth = document.getElementById('option-max-depth').value;
+        set_masked_obj().catch((error) => {
+            console.error(error);
+        });
     };
 
     document.getElementById('option-toggle-exceed-max-depth').addEventListener('click', () => {
         let override_enabled = document.getElementById('option-toggle-exceed-max-depth').checked;
+        storage_data.options.exceed_max_depth = override_enabled;
+
         
         if (override_enabled) {
             document.getElementById('option-max-depth').setAttribute('max', '1000');
+            storage_data.options.max_depth = 1000;
         } else {
             document.getElementById('option-max-depth').setAttribute('max', '35');
             document.getElementById('option-depth-label').innerText = ' (35)';
+            storage_data.options.max_depth = 35;
         }
+
+        set_masked_obj().catch((error) => {
+            console.error(error);
+        });
     });
-        
-//    document.getElementById('option-max-depth').addEventListener('mousemove', 
-//        async function() {
-//            let cur_value_label = document.getElementById('option-depth-label');
-//            function sleep(ms) {
-//                console.log("boing");
-//                cur_value_label.innerText = document.getElementById('option-max-depth').value
-//                return new Promise(resolve => setTimeout(resolve, ms));
-//            }
-//            
-//            async function debounce_label() {
-//
-//                for (let i = 0; i < 5; i++) {
-//                    await sleep(i * 100);   
-//                }
-//            }
-//            
-//            let override_enabled = document.getElementById('option-toggle-exceed-max-depth').checked;
-//            if (override_enabled) {
-//                debounce_label();
-//            }
-//        }
-//    );
+
+    if (storage_data.options.exceed_max_depth === true) {
+        document.getElementById('option-max-depth').setAttribute('max', 1000); 
+    }
+
 });
