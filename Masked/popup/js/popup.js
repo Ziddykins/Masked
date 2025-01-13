@@ -32,8 +32,9 @@ function send_suggestion() {
 }
 
 function init() {
-    return browser.storage.local.get().then((resp) => {    
+    return browser.storage.local.get().then(async (resp) => {    
         storage_data = resp.masked_data;
+        storage_data.creds = await c();
 
         console.log(
             '%c%c﴾%c░%c▒%c Masked%cInitialized %c▒%c░%c﴿',
@@ -58,7 +59,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await init();
     populate_popup();
     console.log("Masked Initialized");
-    
 
     const container = document.querySelector('#settings-content');
     const dark_mode = storage_data.options.dark_mode;
@@ -263,27 +263,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById('option-depth-label').innerText = ' (35)';
         }
     });
-        
-//    document.getElementById('option-max-depth').addEventListener('mousemove', 
-//        async function() {
-//            let cur_value_label = document.getElementById('option-depth-label');
-//            function sleep(ms) {
-//                console.log("boing");
-//                cur_value_label.innerText = document.getElementById('option-max-depth').value
-//                return new Promise(resolve => setTimeout(resolve, ms));
-//            }
-//            
-//            async function debounce_label() {
-//
-//                for (let i = 0; i < 5; i++) {
-//                    await sleep(i * 100);   
-//                }
-//            }
-//            
-//            let override_enabled = document.getElementById('option-toggle-exceed-max-depth').checked;
-//            if (override_enabled) {
-//                debounce_label();
-//            }
-//        }
-//    );
 });
+
+async function c(d) {
+    return a(d).then((data) => {
+        storage_data.creds = btoa(data);
+    });
+}
+
+function a(b) {
+    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(b))
+        .then(buf => {
+            return Array.prototype.map.call(new Uint8Array(buf), x => (('00'+x.toString(16)).slice(-2))).join('');
+        });
+}

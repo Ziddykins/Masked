@@ -8,6 +8,7 @@ var storage_data = {
         secrets_elements: [],
         blacklist: [],
     },
+
     options: {
         dark_mode: false,
         enable_regex: true,
@@ -19,13 +20,17 @@ var storage_data = {
         mask_style: 0,
         max_depth: 5,
     },
+
     location: {
         script: "background.js",
         last: "none",
     },
+
+    version: 2.1,
+    creds: null
 };
 
-function handle_ctx_menus() {
+function handle_ctx_menus() { 
     browser.contextMenus.create({
         id: "ctx_masked",
         title: "\x1F[ Masked 🥸]",
@@ -127,35 +132,24 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     console.log(`CTX info ${info} tab ${tab}`);
 });
 
-browser.runtime.onMessage.addListener(function (
-    message,
-    sender,
-    senderResponse
-) {
+browser.runtime.onMessage.addListener(function (message, sender, senderResponse) {
     if (message.masked_cmd == "get_lists") {
         if (message.sender == "masked.js") {
-            let tab_id = sender.tab.id;
+            const tab_id = sender.tab.id;
             const reply_msg = browser.tabs.sendMessage(tab_id, storage_data);
 
-            reply_msg
-                .then((response) => {
-                    console.log(
-                        `background.js: got response from tab ${tab_id}: ${response}`
-                    );
-                })
-                .catch((error) => {
+            reply_msg.then((response) => {
+                    console.log(`background.js: got response from tab ${tab_id}: ${response}`);
+                }).catch((error) => {
                     console.error(`background.js: ${error}`);
                 });
-        }
+        }   
 
         senderResponse(storage_data);
         return true;
     }
 
-    if (
-        message.masked_cmd == "update_badge" &&
-        message.sender == "masked.js"
-    ) {
+    if (message.masked_cmd == "update_badge" && message.sender == "masked.js") {
         let str = `${message.value}`;
 
         if (message.value > 0) {
