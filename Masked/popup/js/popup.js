@@ -1,9 +1,14 @@
 // This is the one that can't access browser.storage
+const { populate_popup, add_menu_badges } = require('../../functions.js');
 console.log(Date.now() + " " + document.currentScript.src);
 
 var storage_data = {};
 var focused_option = null;
 
+function popup_log(message, type) {
+    
+    document.getElementById("logs").textContent
+}
 
 function send_suggestion() {
     let suggestion = {

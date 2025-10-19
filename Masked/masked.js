@@ -44,11 +44,12 @@ async function do_masks() {
         });
 
         search_regexes.forEach((re) => {
+            let check_emails = storage_data.options.mask_emails;
             search_elements = document.querySelectorAll('*[name*="log"],*[id*="log"]');
-
+            
             search_elements.forEach((e) => {
                 if (re.test(e.id) || re.test(e.name)) {
-                    if (storage_data.options.mask_emails == false && field.match(/email/i)) {
+                    if (check_emails == false && (e.id.match(/email/i) || e.name.match(/email/i))) {
                         return;
                     }
                     found.push(e);

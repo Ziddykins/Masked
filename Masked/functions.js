@@ -1,6 +1,8 @@
+const { popup_log } = require('./popup/js/popup');
+
 console.log(Date.now() + " " + document.currentScript.src);
 
-function status_message(message, type="default") {
+function status_message(message, type = "default") {
     let text_color = 'text-black';
 
     if (type == "success") {
@@ -17,30 +19,30 @@ function status_message(message, type="default") {
         .nodeValue.replace(/text-(black|success|danger)/, 'text-black');
 }
 
-HTMLElement.prototype.sort_options = function() {
-    Array.prototype.slice.call(this.options).sort(function(a, b) {
+HTMLElement.prototype.sort_options = function () {
+    Array.prototype.slice.call(this.options).sort(function (a, b) {
         return a.text > b.text ? 1 : a.text < b.text ? -1 : 0;
-    }).forEach(function(option, index) {
+    }).forEach(function (option, index) {
         this.appendChild(option);
     }, this);
 };
 
 function add_menu_badges() {
-    let secrets_menu_item    = document.getElementById("list-secrets-list");
-    let regex_menu_item     = document.getElementById("list-regex-list");
-    let elements_menu_item  = document.getElementById("list-elements-list");
+    let secrets_menu_item = document.getElementById("list-secrets-list");
+    let regex_menu_item = document.getElementById("list-regex-list");
+    let elements_menu_item = document.getElementById("list-elements-list");
 
-    let secrets_list     = document.getElementById("secrets-list");
-    let regexes_list     = document.getElementById("regex-list");
-    let secrets_ele_list  = document.getElementById("secrets-element-list");
-    let regex_ele_list   = document.getElementById("regex-element-list");    
+    let secrets_list = document.getElementById("secrets-list");
+    let regexes_list = document.getElementById("regex-list");
+    let secrets_ele_list = document.getElementById("secrets-element-list");
+    let regex_ele_list = document.getElementById("regex-element-list");
 
-    let secrets_badge    = document.createElement('span');
-    let regex_badge      = document.createElement('span');
+    let secrets_badge = document.createElement('span');
+    let regex_badge = document.createElement('span');
     let secrets_ele_badge = document.createElement('span');
-    let regex_ele_badge  = document.createElement('span');
+    let regex_ele_badge = document.createElement('span');
 
-    let spacer  = document.createElement('span');
+    let spacer = document.createElement('span');
     spacer.innerText = ' / ';
 
     if (!document.getElementById('secrets-badge')) {
@@ -52,8 +54,8 @@ function add_menu_badges() {
         document.getElementById('secrets-badge').innerText = secrets_list.length;
         document.getElementById('regex-badge').innerText = regexes_list.length;
     }
-    
-    if (!document.getElementById('secrets-badge')) {     
+
+    if (!document.getElementById('secrets-badge')) {
         regex_badge.className = "badge text-bg-warning rounded-pill float-end";
         regex_badge.innerText = regexes_list.length;
         regex_badge.id = 'regex-badge';
@@ -87,16 +89,16 @@ function add_menu_badges() {
 function populate_popup() {
     browser.storage.local.get().then((response) => {
         storage_data = response.masked_data;
-        
-        let secrets_list     = document.getElementById("secrets-list");
-        let regex_list       = document.getElementById("regex-list");
+
+        let secrets_list = document.getElementById("secrets-list");
+        let regex_list = document.getElementById("regex-list");
         let secrets_ele_list = document.getElementById("secrets-element-list");
-        let regex_ele_list   = document.getElementById("regex-element-list");
+        let regex_ele_list = document.getElementById("regex-element-list");
 
-        let max_depth        = document.getElementById("option-max-depth");
-        let depth_label      = document.getElementById("option-depth-label");
+        let max_depth = document.getElementById("option-max-depth");
+        let depth_label = document.getElementById("option-depth-label");
 
-        max_depth.value      = storage_data.options.max_depth;
+        max_depth.value = storage_data.options.max_depth;
         depth_label.innerText = ` (${storage_data.options.max_depth})`;
 
         let toggle_switches = [
@@ -124,7 +126,7 @@ function populate_popup() {
             max_depth.max = 35;
         }
 
-        for (let i=0; i<storage_data.lists.secrets.length; i++) {
+        for (let i = 0; i < storage_data.lists.secrets.length; i++) {
             let list_option = document.createElement('option');
             list_option.id = `lst_sec_${i}`;
             list_option.name = `lst_sec_${i}`;
@@ -132,7 +134,7 @@ function populate_popup() {
             secrets_list.appendChild(list_option);
         };
 
-        for (let i=0; i<storage_data.lists.regexes.length; i++) {
+        for (let i = 0; i < storage_data.lists.regexes.length; i++) {
             let list_option = document.createElement('option');
             list_option.id = `lst_rgx_${i}`;
             list_option.name = `lst_rgx_${i}`;
@@ -140,7 +142,7 @@ function populate_popup() {
             regex_list.appendChild(list_option);
         };
 
-        for (let i=0; i<storage_data.lists.secrets_elements.length; i++) {
+        for (let i = 0; i < storage_data.lists.secrets_elements.length; i++) {
             let list_option = document.createElement('option');
             list_option.id = `lst_sec_ele_${i}`;
             list_option.name = `lst_sec_ele_${i}`;
@@ -148,7 +150,7 @@ function populate_popup() {
             secrets_ele_list.appendChild(list_option);
         }
 
-        for (let i=0; i<storage_data.lists.regex_elements.length; i++) {
+        for (let i = 0; i < storage_data.lists.regex_elements.length; i++) {
             let list_option = document.createElement('option');
             list_option.id = `lst_rgx_ele_${i}`;
             list_option.name = `lst_rgx_ele_${i}`;
@@ -162,15 +164,70 @@ function populate_popup() {
     });
 }
 
-async function set_masked_obj() {
-    browser.storage.local.set({masked_data: storage_data})
+async function set_masked_obj(data) {
+    let current = await get_masked_obj();
+    let storage_data = { ...current, ...data };
+    await update_masked_obj(storage_data);
+}
+
+async function update_masked_obj(data) {
+    browser.storage.local.set({ masked_data: data })
         .then((response) => {
             status_message(response);
         }).catch((error) => {
             return error;
         });
-    
+
     status_message("Saved storage!!!");
 
     return true;
+}
+
+async function get_masked_obj() {
+    let temp = await browser.storage.local.get();
+    let storage_data = temp.masked_data || null;
+
+    if (!storage_data) {
+        console.log("We didn't get an object from get_masked_obj");
+        storage_data = {
+            lists: {
+                regexes: [],
+                secrets: [],
+                regex_elements: [],
+                secrets_elements: [],
+                exclude: [],
+            },
+
+            options: {
+                dark_mode: false,
+                enable_regex: true,
+                enable_secrets: true,
+                secrets_in_regex: false,
+                regex_in_secrets: false,
+                mask_emails: false,
+                exceed_max_depth: false,
+                mask_style: 0,
+                max_depth: 5,
+            },
+
+            location: {
+                script: "functions.js",
+                last: "none",
+            },
+
+            version: 2.1,
+            creds: null
+        };
+    }
+
+    return storage_data;
+}
+
+
+
+module.exports = {
+    set_masked_obj: set_masked_obj,
+    get_masked_obj: get_masked_obj,
+    populate_popup: populate_popup,
+    status_message: status_message,
 }

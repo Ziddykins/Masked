@@ -10,10 +10,6 @@
         "gecko": {
             "id": "masked@memelife.ca",
             "strict_min_version": "109.0"
-        },
-        gecko_android: {
-            id: masked_adr@memelife.ca,
-            strict_min_version: 134.0
         }
     },
 
@@ -44,14 +40,14 @@
 
     "background": {
         "scripts": [
-            "Masked/background.js"            
+            "Masked/dist/background.js"            
         ]
     },
     
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["Masked/masked.js"],
+            "js": ["Masked/dist/masked.js"],
             "run_at": "document_end"
         },
         {

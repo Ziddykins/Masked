@@ -1,34 +1,12 @@
+const { parse, getDomain, getSubdomain } = require('tldts');
+import { get_masked_obj, set_masked_obj } from "./dist/functions"
+
 console.log(Date.now() + " " + document.currentScript.src);
+var storage_data = null
 
-var storage_data = {
-    lists: {
-        regexes: [],
-        secrets: [],
-        regex_elements: [],
-        secrets_elements: [],
-        exclude: [],
-    },
-
-    options: {
-        dark_mode: false,
-        enable_regex: true,
-        enable_secrets: true,
-        secrets_in_regex: false,
-        regex_in_secrets: false,
-        mask_emails: false,
-        exceed_max_depth: false,
-        mask_style: 0,
-        max_depth: 5,
-    },
-
-    location: {
-        script: "background.js",
-        last: "none",
-    },
-
-    version: 2.1,
-    creds: null
-};
+(async () => {
+    storage_data = await get_masked_obj();
+})();
 
 function handle_ctx_menus() {
     let [sub, apex, tld, hostname] = ['','','',''];
@@ -68,12 +46,10 @@ function handle_ctx_menus() {
     });
 
     browser.contextMenus.create({
-        id: "ctx_exclude_sub",
+        id: "ctx_exclude_exact",
         title: `Exclude this exact link (${window.location.href})`,
         contexts: ["link"]
     });
-
-
 }
 
 function handle_install() {
@@ -136,34 +112,39 @@ browser.runtime.onInstalled.addListener(handle_install);
 
 /*browser.menus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "mnu_exclude_this") {
-        browser.tabs.update(tab.id, { url: info.linkUrl });
+        browser.tabs.update(tab.id,T { url: info.linkUrl });
     }
 });*/
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-    let match_rgx = /(.*?)\.(.*?)\.(.*?)\//;
-    let rgx = new RegExp(match_rgx, "g");
-    let [sub, apex, tld] = info.linkUrl.match(rgx);
-    
+    let curUrl = parse(info.linkUrl)
+    console.log("CURURL:");
+    console.log(curUrl);
+
     switch(info.menuItemId) {
         case "ctx_exclude_domain":
-            console.log("Excludeing domain");
-            storage_data.lists.exclude.push(window.location.hostname);
+            console.log("Excluding domain " + curUrl.domain + "/*");
+            storage_data.lists.exclude.push(curUrl.domain + "/*");
             break;
         case "ctx_exclude_sub":
-            console.log("Excludeing sub-domain");
+            console.log("Excluding sub-domain");
+            storage_data.lists.exclude.push(curUrl.hostname + "/*");
             break;
         case "ctx_":
-            console.log("Excludeing link");
+            console.log("Excluding link");
+            storage_data.lists.exclude.push(info.linkUrl)
             break;
         default:
             console.log("nope");
     }
 
+    set_masked_obj
+
     console.log("info");
     console.log(info);
     console.log("Tab");
     console.log(tab);
+
 });
 
 browser.runtime.onMessage.addListener((message, sender, senderResponse) => {

@@ -1,0 +1,20 @@
+{
+  "name": "masked-extension-tests",
+  "version": "0.0.1",
+  "description": "Test harness and dev scripts for the Masked extension",
+  "private": true,
+  "scripts": {
+    "test": "jest --runInBand --detectOpenHandles",
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11",
+    "jest": "^29.0.0",
+    "jsdom": "^22.0.0"
+  },
+  "dependencies": {
+    "parse-url": "^10.0.3",
+    "tldts": "^7.0.17"
+  }
+}
