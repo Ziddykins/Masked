@@ -25,17 +25,12 @@ const builds = [
     entryPoints: ['Masked/popup/js/popup.js'],
     outfile: 'Masked/dist/popup.js',
   },
-    {
-    ...sharedConfig,
-    entryPoints: ['Masked/functions.js'],
-    outfile: 'Masked/dist/functions.js',
-  },
 ];
 
 if (isWatch) {
   Promise.all(builds.map(config => 
     esbuild.context(config).then(ctx => ctx.watch())
-  )).then(() => console.log('Watching for changes...'));
+  )).then(() => popup_log('Watching for changes...'), 'info');
 } else {
   Promise.all(builds.map(esbuild.build))
     .then(() => console.log('Build complete'))

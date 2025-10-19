@@ -1,6 +1,6 @@
-const { popup_log } = require('./popup/js/popup');
+const { popup_log } = require('./logger.js');
 
-console.log(Date.now() + " " + document.currentScript.src);
+popup_log(Date.now() + " " + document.currentScript.src, 'info');
 
 function status_message(message, type = "default") {
     let text_color = 'text-black';
@@ -115,9 +115,12 @@ function populate_popup() {
             let selector = 'option-toggle-' + toggle_switches[key];
             let toggle_switch = document.getElementById(selector);
             let stored_val = storage_data.options[toggle_switches[key].replaceAll("-", "_")];
-            toggle_switch.checked = stored_val;
 
-            console.log(`settings toggle_switches[${key}] = ${toggle_switches[key].replaceAll("-", "_")}`);
+            if (toggle_switch) {
+                toggle_switch.checked = stored_val;
+            }
+
+            popup_log(`settings toggle_switches[${key}] = ${toggle_switches[key].replaceAll("-", "_")}`, 'info');
         }
 
         if (document.getElementById('option-toggle-exceed-max-depth').checked === true) {
@@ -178,7 +181,7 @@ async function update_masked_obj(data) {
             return error;
         });
 
-    status_message("Saved storage!!!");
+    popup_log("Saved storage!!!", 'info');;
 
     return true;
 }
@@ -188,7 +191,7 @@ async function get_masked_obj() {
     let storage_data = temp.masked_data || null;
 
     if (!storage_data) {
-        console.log("We didn't get an object from get_masked_obj");
+        popup_log(`We didn't get an object from get_masked_obj`, 'info');
         storage_data = {
             lists: {
                 regexes: [],
@@ -223,11 +226,11 @@ async function get_masked_obj() {
     return storage_data;
 }
 
-
-
 module.exports = {
-    set_masked_obj: set_masked_obj,
-    get_masked_obj: get_masked_obj,
-    populate_popup: populate_popup,
-    status_message: status_message,
-}
+    set_masked_obj,
+    get_masked_obj,
+    update_masked_obj,
+    populate_popup,
+    status_message,
+    add_menu_badges,
+};

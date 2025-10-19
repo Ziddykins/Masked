@@ -4,10 +4,26 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
+  // Masked/logger.js
+  var require_logger = __commonJS({
+    "Masked/logger.js"(exports, module) {
+      function popup_log(message, type = "info") {
+        const out_message = `[${Date().toLocaleString().split(" GMT")[0]}](${type}) -> ${message}
+`;
+        const logEl = document.getElementById("logs");
+        if (logEl) {
+          logEl.textContent += `${out_message}`;
+        }
+      }
+      module.exports = { popup_log };
+    }
+  });
+
   // Masked/functions.js
   var require_functions = __commonJS({
     "Masked/functions.js"(exports, module) {
-      console.log(Date.now() + " " + document.currentScript.src);
+      var { popup_log } = require_logger();
+      popup_log(Date.now() + " " + document.currentScript.src, "info");
       function status_message(message, type = "default") {
         let text_color = "text-black";
         if (type == "success") {
@@ -102,7 +118,7 @@
             let toggle_switch = document.getElementById(selector);
             let stored_val = storage_data.options[toggle_switches[key].replaceAll("-", "_")];
             toggle_switch.checked = stored_val;
-            console.log(`settings toggle_switches[${key}] = ${toggle_switches[key].replaceAll("-", "_")}`);
+            popup_log(`settings toggle_switches[${key}] = ${toggle_switches[key].replaceAll("-", "_")}`, "info");
           }
           if (document.getElementById("option-toggle-exceed-max-depth").checked === true) {
             max_depth.max = max_depth.value;
@@ -155,14 +171,15 @@
         }).catch((error) => {
           return error;
         });
-        status_message("Saved storage!!!");
+        popup_log("Saved storage!!!", "info");
+        ;
         return true;
       }
       async function get_masked_obj() {
         let temp = await browser.storage.local.get();
         let storage_data2 = temp.masked_data || null;
         if (!storage_data2) {
-          console.log("We didn't get an object from get_masked_obj");
+          popup_log(`We didn't get an object from get_masked_obj`, "info");
           storage_data2 = {
             lists: {
               regexes: [],
@@ -195,8 +212,10 @@
       module.exports = {
         set_masked_obj,
         get_masked_obj,
+        update_masked_obj,
         populate_popup,
-        status_message
+        status_message,
+        add_menu_badges
       };
     }
   });

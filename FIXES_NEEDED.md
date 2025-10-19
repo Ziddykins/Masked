@@ -67,7 +67,7 @@ This checklist documents bugs, issues, and improvements discovered during code r
   storage_data.lists.secrets.forEach((s) => {
       out +='*[name*="' + s + '"],*[id*="' + s + '"]';
   });
-  console.log(out);
+  popup_log(out, 'info');
   ```
   - Selector string is built and logged but never actually used
   - **Fix**: Use `out` in `querySelectorAll()` or remove the unused code

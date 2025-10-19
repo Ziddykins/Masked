@@ -1,11 +1,10 @@
-console.log(`masked.js loaded`);
-
-var storage_data = {};
+popup_log(`masked.js loaded`, 'info');
+const { get_masked_obj, set_masked_obj } = require('./functions')
 
 async function init() {
     return browser.storage.local.get().then((resp) => {
-        storage_data = resp.masked_data;
-        console.log("Masked storage loaded");
+        storage_data = get_masked_object();
+        popup_log(`Masked storage loaded`, 'info');
     }).catch((err) => {
         console.error("Error getting storage data: ", err);
     });
@@ -24,7 +23,7 @@ async function do_masks() {
 
     if (storage_data.options.enable_secrets === true) {
         if (storage_data.options.regex_in_secrets) {
-            console.log("regex in secrets enabled, combining secrets and regexes");
+            popup_log(`regex in secrets enabled, combining secrets and regexes`, 'info');
             secrets = [...secrets_t, ...regexes_t];
         }
 
@@ -32,7 +31,7 @@ async function do_masks() {
         storage_data.lists.secrets.forEach((s) => {
             out +='*[name*="' + s + '"],*[id*="' + s + '"]';
         });
-        console.log(out);
+        popup_log(out, 'info');
         
 
         search_regexes = secrets_t.map(secret => {
@@ -85,7 +84,7 @@ async function do_masks() {
                     f.textContent = "*".repeat(f.textContent.length);
                     break;
                 default:
-                    console.log(f);
+                    popup_log(f, 'info');
                     holder.value = f.value;
                     f.value = "*".repeat(f.value.length);
                     break;
@@ -115,19 +114,19 @@ async function maskRegexMatches() {
             textNodes.push(node);
         } else {
             if (depth <= maxDepth) {
-                console.log(`depth: ${depth}`);
+                popup_log(`depth: ${depth}`, 'info');
                 depth++;
                 node.childNodes.forEach(getTextNodes);
                 depth--;
             } else {
-                console.log(`Maximum node-depth of ${maxDepth} reached, skipping`);
+                popup_log(`Maximum node-depth of ${maxDepth} reached, skipping`, 'info');
                 return;
             }
         }
     }
    
     getTextNodes(document.body);
-    console.log(`${textNodes.length} nodes found`);
+    popup_log(`${textNodes.length} nodes found`, 'info');
     
     textNodes.forEach((textNode) => {
         regexes.forEach((regex) => {
@@ -187,7 +186,7 @@ function maskElement(element) {
             element.textContent = "*".repeat(element.textContent.length);
             break;
         default:
-            console.log(element);
+            popup_log(element, 'info');
             holder.value = element.value;
             element.value = "*".repeat(element.value.length);
             break;

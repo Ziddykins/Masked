@@ -1,8 +1,8 @@
 const { parse, getDomain, getSubdomain } = require('tldts');
-import { get_masked_obj, set_masked_obj } from "./dist/functions"
+const { get_masked_obj, set_masked_obj } = require('./functions.js')
+const { popup_log } = require('./popup/js/popup.js');
 
-console.log(Date.now() + " " + document.currentScript.src);
-var storage_data = null
+var storage_data;
 
 (async () => {
     storage_data = await get_masked_obj();
@@ -19,7 +19,7 @@ function handle_ctx_menus() {
     }
     tld = splits[splits.length - 1];
 
-    console.log(`sub: ${sub}, apex: ${apex}, tld: ${tld}, hostname: ${hostname}`);
+    popup_log(`sub: ${sub}, apex: ${apex}, tld: ${tld}, hostname: ${hostname}`, 'info');
     
     browser.contextMenus.create({
         id: "ctx_masked",
@@ -74,7 +74,7 @@ function handle_install() {
         "Masked/resources/exclude.txt",
     ];
 
-    console.log(JSON.stringify(storage_data));
+    popup_log(JSON.stringify(storage_data), 'info');
     const all_promises = [];
 
     for (const url of resources) {
@@ -84,7 +84,7 @@ function handle_install() {
             .then((data) => {
                 list = data.split("\n");
                 list.sort();
-                console.log("Installed" + storage_data);
+                popup_log("Installed" + storage_data, 'info');
                 storage_data.lists[url.split("/").pop().split(".")[0]] = list;
             })
             .catch((error) => {
@@ -95,7 +95,7 @@ function handle_install() {
 
     Promise.all(all_promises)
         .then(() => {
-            console.log("background.js: all fetches complete, adding initial storage data");
+            popup_log(`background.js: all fetches complete, adding initial storage data`, 'info');
             browser.storage.local
                 .set({ masked_data: storage_data })
                 .catch((error) => {
@@ -116,34 +116,34 @@ browser.runtime.onInstalled.addListener(handle_install);
     }
 });*/
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
     let curUrl = parse(info.linkUrl)
-    console.log("CURURL:");
-    console.log(curUrl);
+    popup_log(`CURURL:`, 'info');
+    popup_log(curUrl, 'info');
 
     switch(info.menuItemId) {
         case "ctx_exclude_domain":
-            console.log("Excluding domain " + curUrl.domain + "/*");
+            popup_log(`Excluding domain " + curUrl.domain + "/*`, 'info');
             storage_data.lists.exclude.push(curUrl.domain + "/*");
             break;
         case "ctx_exclude_sub":
-            console.log("Excluding sub-domain");
+            popup_log(`Excluding sub-domain`, 'info');
             storage_data.lists.exclude.push(curUrl.hostname + "/*");
             break;
         case "ctx_":
-            console.log("Excluding link");
+            popup_log(`Excluding link`, 'info');
             storage_data.lists.exclude.push(info.linkUrl)
             break;
         default:
-            console.log("nope");
+            popup_log(`nope`, 'info');
     }
 
-    set_masked_obj
+    await set_masked_obj();
 
-    console.log("info");
-    console.log(info);
-    console.log("Tab");
-    console.log(tab);
+    popup_log('info: ', 'info');
+    popup_log(info, 'info');
+    popup_log('Tab', 'info');
+    popup_log(tab, 'info');
 
 });
 
@@ -154,7 +154,7 @@ browser.runtime.onMessage.addListener((message, sender, senderResponse) => {
             const reply_msg = browser.tabs.sendMessage(tab_id, storage_data);
 
             reply_msg.then((response) => {
-                console.log(`background.js: got response from tab ${tab_id}: ${response}`);
+                popup_log(`background.js: got response from tab ${tab_id}: ${response}`, 'info');
             }).catch((error) => {
                 console.error(`background.js: ${error}`);
             });
@@ -177,10 +177,10 @@ browser.runtime.onMessage.addListener((message, sender, senderResponse) => {
     }
 
     if (message.masked_cmd == "set_lists" && message.sender == "popup.js") {
-        console.log(message.data);
+        popup_log(message.data, 'info');
         browser.storage.local.set({ masked_data: message.data });
-        console.log("Message from popup.js, saving storage");
-        console.log(`data:`);
+        popup_log(`Message from popup.js, saving storage`, 'info');
+        popup_log(`data:`, 'info');
         senderResponse(true);
         return true;
     }
